@@ -14,8 +14,8 @@ class Move(NamedTuple):
 
 BOARD_SIZE = 3
 DEFAULT_PLAYERS = (
-    Player(label="X", color="blue"),
-    Player(label="O", color="red"),
+    Player(label="EX", color="blue"),
+    Player(label="OW", color="red"),
 )
 
 
@@ -51,21 +51,23 @@ class Game:
     def is_valid_move(self, move):
         """Return True if move is valid, and False otherwise."""
         row, col = move.row, move.col
-        # TODO: check that the current move has not been played already 
-        # and that there is no winner yet. Note that non-played cells
-        # contain an empty string (i.e. ""). 
-        # Use variables no_winner and move_not_played.
-        
+        no_winner = not self.has_winner() and not self.is_tied()
+        move_not_played = self._current_moves[move.row][move.col].label == ""
         return no_winner and move_not_played
 
     def process_move(self, move):
         """Process the current move and check if it's a win."""
         row, col = move.row, move.col
         self._current_moves[row][col] = move
-        # TODO: check whether the current move leads to a winning combo.
-        # Do not return any values but set variables  self._has_winner 
-        # and self.winner_combo in case of winning combo.
-        # Hint: you can scan pre-computed winning combos in self._winning_combos
+        for combo in self._winning_combos:
+            self._has_winner = True
+            for wr, wc in combo:
+                if self._current_moves[wr][wc].label != self.current_player.label:
+                    self._has_winner = False
+                    break
+            if self._has_winner:
+                self.winner_combo = combo
+                break
 
 
     def has_winner(self):
@@ -74,13 +76,17 @@ class Game:
 
     def is_tied(self):
         """Return True if the game is tied, and False otherwise."""
-        # TODO: check whether a tie was reached.
-        # There is no winner and all moves have been tried.
+        if self._has_winner:
+            return False
+        for row in range(3):
+            for col in range(3):
+                if self._current_moves[row][col].label == "":
+                    return False
+        return True
 
     def toggle_player(self):
         """Return a toggled player."""
-        # TODO: switches self.current_player to the other player.
-        # Hint: https://docs.python.org/3/library/functions.html#next
+        self.current_player = next(self._players)
        
     def reset_game(self):
         """Reset the game state to play again."""
