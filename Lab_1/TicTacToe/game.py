@@ -14,8 +14,8 @@ class Move(NamedTuple):
 
 BOARD_SIZE = 3
 DEFAULT_PLAYERS = (
-    Player(label="X", color="blue"),
-    Player(label="O", color="red"),
+    Player(label="EX", color="blue"),
+    Player(label="OH", color="red"),
 )
 
 
