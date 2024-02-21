@@ -1,5 +1,5 @@
 <a href="https://www.bernardi.cloud/">
-    <img src=".readme-files/logo-ase-72.png" alt="Advanced Software Engineering logo" title="Advanced Software Engineering" align="right" height="72" />
+    <img src=".readme-files/logo-ase-72.png" alt="Advanced Software Engineering logo" title="Advanced Software Engineering" align="right" height="144" />
 </a>
 
 # Advanced Software Engineering
