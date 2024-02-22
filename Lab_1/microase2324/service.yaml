@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+spec:
+  type: LoadBalancer #NodePort
+  selector: 
+    app: gateway
+  ports:
+    - protocol: TCP
+      port: 5000 #insert gateway port here
+      targetPort: 5000 #insert gateway target port here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: math-service
+spec:
+  selector: 
+    app: math-service
+  ports:
+    - protocol: TCP
+      port: 5000 #insert gateway port here
+      targetPort: 5000 #insert gateway target port here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: string-service
+spec:
+  selector: 
+    app: string-service
+  ports:
+    - protocol: TCP
+      port: 5000 #insert gateway port here
+      targetPort: 5000 #insert gateway target port here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-service
+spec:
+  selector: 
+    app: log-service
+  ports:
+    - protocol: TCP
+      port: 5000 #insert gateway port here
+      targetPort: 5000 #insert gateway target port here
