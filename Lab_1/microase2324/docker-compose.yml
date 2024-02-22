@@ -1,5 +1,10 @@
 version: '3'
 services:
+  gateway:
+    build: ./gateway
+    ports:
+      - 5000:5000
+
   math-service1:
     build: ./math_py
     ports:
@@ -15,6 +20,8 @@ services:
     ports:
       - 5003:5000
 
+  log-service:
+    build: ./log_py
   db:
     image: redis:6.2-alpine
     restart: always

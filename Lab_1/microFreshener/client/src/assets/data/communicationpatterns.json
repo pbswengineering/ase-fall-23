@@ -1,0 +1,15 @@
+{
+    "data": [
+        {
+            "id": 2,
+            "name": "Message broker",
+            "type": "messagebroker"
+            
+        },
+        {
+            "id": 3,
+            "name": "Message Router",
+            "type": "messagerouter"
+        }
+    ]
+}

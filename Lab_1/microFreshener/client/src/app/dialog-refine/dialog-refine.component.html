@@ -1,0 +1,40 @@
+<div class="p-grid p-justify-center">
+  <div class="p-col-4">
+      <p-card header="Kubernetes" subheader="Upload Kubernetes files"> 
+          <p-header>
+            <div align="center" >
+              <img src="Card" style="width:50px"   src="assets/images/orchestrator/kubernetes.png">
+            </div>
+          </p-header>
+        <p-footer>
+            <p-fileUpload mode="basic"
+            name="kubernetes"
+            [url]="urlRefineKubernetes"
+            accept=".yml"
+            (onUpload)="onUploadKubernetes()"
+            chooseLabel="Import">
+          </p-fileUpload>
+        </p-footer>
+      </p-card>
+  </div>
+
+  <div class="p-col-4">
+      <p-card header="Istio" class="center"  subheader="Upload Istio files" >
+        <p-header>
+          <div align="center">
+              <img src="Card" style="width:32px"  src="assets/images/orchestrator/istio.png">
+          </div>
+            
+        </p-header>
+        <p-footer>
+            <p-fileUpload mode="basic"
+            name="istio"
+            [url]="urlRefineIstio"
+            accept=".yml"
+            (onUpload)="onUploadIstio()"
+            chooseLabel="Import">
+          </p-fileUpload>
+        </p-footer>
+      </p-card>
+  </div>
+</div>

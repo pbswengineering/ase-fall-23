@@ -1,0 +1,34 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "principle": "Independent Deployability",
+            "name": "Multiple Services in One Container",
+            "description": ""
+        },
+        {
+            "id": 2,
+            "principle": "Horizzontal Scalability",
+            "name": "No Api Gateway",
+            "description": ""
+        },
+        {
+            "id": 3,
+            "principle": "Horizzontal Scalability",
+            "name": "Endpoint-based Service Interactions",
+            "description": ""
+        },
+        {
+            "id": 4,
+            "principle": "Isolation of Failures",
+            "name": "Wobbly service interactions",
+            "description": ""
+        },
+        {
+            "id": 6,
+            "principle": "Decentralization",
+            "name": "Shared Persistency",
+            "description": ""
+        }
+    ]
+}

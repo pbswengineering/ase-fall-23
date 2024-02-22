@@ -1,0 +1,131 @@
+tosca_definitions_version: micro_tosca_yaml_1.1
+
+description: >
+  Anonymised version of the microservice-based architecture
+  of a platform for monitoring and managing a smart factory
+
+imports:
+- micro: https://di-unipi-socc.github.io/microTOSCA/1.1/microTOSCA.yaml
+
+topology_template:
+  node_templates:
+    d1:
+      type: micro.nodes.Datastore
+    d2:
+      type: micro.nodes.Datastore
+    d3:
+      type: micro.nodes.Datastore
+    d4:
+      type: micro.nodes.Datastore
+    d5:
+      type: micro.nodes.Datastore
+    d6:
+      type: micro.nodes.Datastore
+    d7:
+      type: micro.nodes.Datastore
+
+    m1:
+      type: micro.nodes.MessageBroker
+    m2:
+      type: micro.nodes.MessageBroker
+
+    s1:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d1
+        - interaction: d2
+        - interaction: d3
+        - interaction:
+            node: s2
+            relationship: td
+    s2:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d4
+        - interaction: d5
+        - interaction:
+            node: s4
+            relationship: td
+    s3:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: m1
+        - interaction: m2
+    s4:
+      type: micro.nodes.Service
+      requirements:
+        - interaction:
+            node: s6
+            relationship: td
+    s5:
+      type: micro.nodes.Service
+      requirements:
+        - interaction:
+            node: s2
+            relationship: td
+    s6:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d6
+        - interaction: m1
+    s7:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d6
+        - interaction:
+            node: s5
+            relationship: td
+    s8:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d6
+        - interaction:
+            node: s7
+            relationship: td
+    s9:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d6
+    s10:
+      type: micro.nodes.Service
+      requirements:
+        - interaction: d7
+        - interaction:
+            node: s8
+            relationship: td
+    s11:
+      type: micro.nodes.Service
+      requirements:
+        - interaction:
+            node: s9
+            relationship: td
+        - interaction:
+            node: s10
+            relationship: td
+    s12:
+      type: micro.nodes.Service
+      requirements:
+        - interaction:
+            node: s1
+            relationship: td
+        - interaction:
+            node: s2
+            relationship: td
+        - interaction:
+            node: s10
+            relationship: td
+        - interaction:
+            node: s11
+            relationship: td
+
+  groups:
+    edge:
+      type: micro.groups.Edge
+      members: [m1,m2,s1,s2]
+
+  relationship_templates:
+    td:
+      type: micro.relationships.InteractsWith
+      properties:
+        timeout: true
+        dynamic_discovery: true

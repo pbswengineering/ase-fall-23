@@ -44,12 +44,15 @@ def lower():
 
 
 def sendLogService(a,b,op,res,URL):
-    if b is None:
-        s = a + ' ' + op + ' ' + b + ' = ' + res + "_from: "+URL
-    else:
-        s = op + ' ' + a + ' = ' + res + "_from: "+URL
-    x = requests.post(LOG_URL + f'/addLog',json={'time':str(datetime.now()), 'log':s})
-    x.raise_for_status()
+    try:
+        if b is None:
+            s = a + ' ' + op + ' ' + b + ' = ' + res + "_from: "+URL
+        else:
+            s = op + ' ' + a + ' = ' + res + "_from: "+URL
+        x = requests.post(LOG_URL + f'/addLog',json={'time':str(datetime.now()), 'log':s})
+        x.raise_for_status()
+    except:
+         pass
 
 
 def sendLogDB(a,b,op,res,URL):
@@ -60,4 +63,4 @@ def sendLogDB(a,b,op,res,URL):
     r.set(str(datetime.now()), s)
 
 def sendLog(a,b,op,res,URL):
-    return sendLogDB(a,b,op,res,URL)
+    return sendLogService(a,b,op,res,URL)

@@ -1,0 +1,92 @@
+tosca_definitions_version: micro_tosca_yaml_1.1
+description: FTGO
+imports:
+- micro: https://di-unipi-socc.github.io/microTOSCA/1.1/microTOSCA.yaml
+topology_template:
+  node_templates:
+    Order:
+      type: micro.nodes.Service
+      requirements:
+      - interaction: order-db
+      - interaction: Accounting
+    Kitchen:
+      type: micro.nodes.Service
+      requirements:
+      - interaction: kitchen-db
+    Accounting:
+      type: micro.nodes.Service
+      requirements:
+      - interaction: accounting-db
+    API gateway:
+      type: micro.nodes.MessageRouter
+      requirements:
+      - interaction: Restaurant
+      - interaction: Delivery
+    Restaurant:
+      type: micro.nodes.Service
+      requirements:
+      - interaction: Restaurant-db
+      - interaction: Notification
+    Delivery:
+      type: micro.nodes.Service
+      requirements:
+      - interaction: delivery-db
+      - interaction: Accounting
+    order-db:
+      type: micro.nodes.Datastore
+    Restaurant-db:
+      type: micro.nodes.Datastore
+    kitchen-db:
+      type: micro.nodes.Datastore
+    delivery-db:
+      type: micro.nodes.Datastore
+    Restaurant WebUI:
+      type: micro.nodes.Service
+      requirements:
+      - interaction: Order
+      - interaction: Restaurant
+      - interaction: Kitchen
+    Notification:
+      type: micro.nodes.Service
+    accounting-db:
+      type: micro.nodes.Datastore
+  groups:
+    edgenodes:
+      type: micro.groups.Edge
+      members:
+      - Restaurant WebUI
+      - API gateway
+  relationship_templates:
+    t:
+      type: micro.relationships.InteractsWith
+      properties:
+        timeout: true
+    c:
+      type: micro.relationships.InteractsWith
+      properties:
+        circuit_breaker: true
+    d:
+      type: micro.relationships.InteractsWith
+      properties:
+        dynamic_discovery: true
+    tc:
+      type: micro.relationships.InteractsWith
+      properties:
+        timeout: true
+        circuit_breaker: true
+    td:
+      type: micro.relationships.InteractsWith
+      properties:
+        timeout: true
+        dynamic_discovery: true
+    cd:
+      type: micro.relationships.InteractsWith
+      properties:
+        circuit_breaker: true
+        dynamic_discovery: true
+    tcd:
+      type: micro.relationships.InteractsWith
+      properties:
+        timeout: true
+        circuit_breaker: true
+        dynamic_discovery: true

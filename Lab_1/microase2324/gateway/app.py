@@ -121,4 +121,4 @@ def getLogDB():
 
 
 def getLogs():
-    return getLogDB()
+    return getLogService()

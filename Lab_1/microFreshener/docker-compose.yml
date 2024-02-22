@@ -1,0 +1,13 @@
+version: "3"
+
+services:     
+  server:
+    container_name: microfreshener-server
+    build: ./server
+    ports:
+      - "8000:8000"
+  client:
+    container_name: microfreshener-client
+    build: ./client
+    ports:
+      - "8080:80"
