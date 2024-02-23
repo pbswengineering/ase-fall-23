@@ -1,9 +1,11 @@
 FROM python:3.9.18-slim
 
-ADD . /math_py
-WORKDIR /math_py
-
+RUN mkdir /app
+WORKDIR /app
+ADD ./requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+
+ADD . .
 
 EXPOSE 5000
 

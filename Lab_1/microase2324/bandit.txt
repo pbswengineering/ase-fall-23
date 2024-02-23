@@ -1,0 +1,47 @@
+Run started:2024-02-22 17:00:40.833664
+
+Test results:
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   Location: ./gateway/app.py:111
+   More Info: https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html
+110	    try:
+111	        r = subprocess.run(f'ping -w 2 -c 3 {URL}', capture_output=True, shell=True)
+112	
+
+--------------------------------------------------
+>> Issue: [B307:blacklist] Use of possibly insecure function - consider using safer ast.literal_eval.
+   Severity: Medium   Confidence: High
+   Location: ./math_py/app.py:22
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b307-eval
+21	    if lst is not None:
+22	        lst = eval(lst) # get list from string
+23	        if (op in [operator.truediv, operator.mod]) and any(x == 0 for x in lst[1:]):
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   Location: ./math_py/app.py:62
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
+61	    b = int(b)
+62	    value = random.randint(a,b)
+63	    sendLog(a,b,'randint', value,request.host)
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 304
+	Total lines skipped (#nosec): 1
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0.0
+		Low: 1.0
+		Medium: 1.0
+		High: 1.0
+	Total issues (by confidence):
+		Undefined: 0.0
+		Low: 0.0
+		Medium: 0.0
+		High: 3.0
+Files skipped (0):

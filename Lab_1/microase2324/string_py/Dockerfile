@@ -1,9 +1,11 @@
 FROM python:3.9.18-slim
 
-ADD . /string_py
-WORKDIR /string_py
-
+RUN mkdir /app
+WORKDIR /app
+ADD ./requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+
+ADD . .
 
 EXPOSE 5000
 

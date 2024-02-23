@@ -1,28 +1,28 @@
 version: '3'
 services:
+  math-service1:
+    build: ./math_py
+  
+  math-service2:
+    build: ./math_py
+
+  string-service:
+    build: ./string_py
+  
+  log-service:
+    build: ./log_py
+    depends_on:
+      - log_db
+
   gateway:
     build: ./gateway
     ports:
       - 5000:5000
 
-  math-service1:
-    build: ./math_py
-    ports:
-      - 5001:5000
-  
-  math-service2:
-    build: ./math_py
-    ports:
-      - 5002:5000
-
-  string-service:
-    build: ./string_py
-    ports:
-      - 5003:5000
-
-  log-service:
-    build: ./log_py
-  db:
-    image: redis:6.2-alpine
-    restart: always
-    command: redis-server --save 20 1 --loglevel warning
+  log_db: 
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'log_db'
+      MYSQL_USER: 'log'
+      MYSQL_PASSWORD: 'log'
+      MYSQL_ROOT_PASSWORD: 'root_password'

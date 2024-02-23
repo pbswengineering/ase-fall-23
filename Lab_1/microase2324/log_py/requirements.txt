@@ -1,4 +1,5 @@
 Flask
 requests
 python-dotenv
-redis
+flask-sqlalchemy
+mysqlclient==2.0.3

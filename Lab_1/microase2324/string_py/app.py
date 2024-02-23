@@ -1,5 +1,5 @@
 from flask import Flask, request, make_response, jsonify
-import requests, redis, os
+import requests, os
 from requests.exceptions import ConnectionError, HTTPError
 from datetime import datetime
 
@@ -7,7 +7,6 @@ app = Flask(__name__, instance_relative_config=True)
 
 
 LOG_URL = 'http://log-service:5000'
-r = redis.Redis(host='db', port=6379, decode_responses=True)
 
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -43,7 +42,7 @@ def lower():
     return make_response(jsonify(s=a.lower()), 200)
 
 
-def sendLogService(a,b,op,res,URL):
+def sendLog(a,b,op,res,URL):
     try:
         if b is None:
             s = a + ' ' + op + ' ' + b + ' = ' + res + "_from: "+URL
@@ -51,16 +50,5 @@ def sendLogService(a,b,op,res,URL):
             s = op + ' ' + a + ' = ' + res + "_from: "+URL
         x = requests.post(LOG_URL + f'/addLog',json={'time':str(datetime.now()), 'log':s})
         x.raise_for_status()
-    except:
-         pass
-
-
-def sendLogDB(a,b,op,res,URL):
-    if b is None:
-            s = a + ' ' + op + ' ' + b + ' = ' + res + "_from: "+URL
-    else:
-            s =  ' ' + op + ' ' + a + ' = ' + res + "_from: "+URL
-    r.set(str(datetime.now()), s)
-
-def sendLog(a,b,op,res,URL):
-    return sendLogService(a,b,op,res,URL)
+    except (ConnectionError, HTTPError):
+        return 

@@ -1,18 +1,18 @@
 import requests
 
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response
 from requests.exceptions import ConnectionError, HTTPError
 from urls import *
-import redis
+import os
+import subprocess # nosec
 
-ALLOWED_MATH_OPS = ['add', 'sub', 'mul', 'div', 'mod', 'crash']
+ALLOWED_MATH_OPS = ['add', 'sub', 'mul', 'div', 'mod', 'crash', 'secure_random']
 ALLOWED_STR_OPS = ['lower', 'upper', 'concat', 'crash']
 
 ids = {} #CAREFUL, THIS IS NOT FOR MULTIUSER AND MULTITHREADING, JUST FOR DEMO PURPOSES
 
 app = Flask(__name__, instance_relative_config=True)
 
-r = redis.Redis(host='db', port=6379, decode_responses=True)
 
 def create_app():
     return app
@@ -21,15 +21,18 @@ def create_app():
 def math(op):
     a = request.args.get('a', type=float)
     b = request.args.get('b', type=float)
+    lst = request.args.get('lst', type=str)
     if op not in ALLOWED_MATH_OPS:
         return make_response('Invalid operation\n', 404)
     try:
         M_URL=getMathURL()
         if({op} == 'crash'):
             URL = M_URL + f'/crash'
+        elif lst is not None:
+            URL = M_URL + f'/{op}?lst={lst}'
         else:
             URL = M_URL + f'/{op}?a={a}&b={b}'
-        x = requests.get(URL)
+        x = requests.get(URL, timeout=1)
         x.raise_for_status()
         res = x.json()
         return res
@@ -40,7 +43,7 @@ def math(op):
                 URL = M_URL + f'/crash'
             else:
                 URL = M_URL + f'/{op}?a={a}&b={b}'
-            x = requests.get(URL)
+            x = requests.get(URL, timeout=1)
             x.raise_for_status()
             res = x.json()
         except ConnectionError:
@@ -70,11 +73,11 @@ def string(op):
         return make_response('Invalid operation\n', 404)
     try:
         if op == 'lower' or op == 'upper':
-            x = requests.get(STRING_URL + f'/{op}?a={a}')
+            x = requests.get(STRING_URL + f'/{op}?a={a}', timeout=1)
         elif op == 'crash':
-            x = requests.get(STRING_URL + f'/crash')
+            x = requests.get(STRING_URL + f'/crash', timeout=1)
         else:
-            x = requests.get(STRING_URL + f'/{op}?a={a}&b={b}')
+            x = requests.get(STRING_URL + f'/{op}?a={a}&b={b}', timeout=1)
         x.raise_for_status()
         return x.json()
     except ConnectionError:
@@ -91,6 +94,34 @@ def log(op):
     else:
         return make_response('Invalid operation\n', 404)
 
+@app.route('/log/count/<URL>')
+def countLogs(URL):
+    try:
+        x = requests.get(LOG_URL + f'/countLogs/{URL}', timeout=1)
+        x.raise_for_status()
+        return x.text
+    except ConnectionError:
+        return make_response('Log service is down\n', 404)
+    except HTTPError:
+        return make_response('Invalid input\n', 400)
+
+@app.route('/ping/<URL>')
+def ping(URL):
+    try:
+        from urllib.parse import urlparse
+        parsed_url = urlparse(URL)
+        if not parsed_url.scheme or not parsed_url.netloc:
+            raise Exception("Invalid URL")
+        r = subprocess.run(['/usr/bin/ping', '-w', '2', '-c', '3', URL], capture_output=True) #nosec
+
+        if b"100% packet loss" in r.stdout:
+            return make_response('service is down', 404)
+        else:
+            return make_response(r.stdout, 200)
+    except:
+        return make_response('error', 500)
+
+
 def crashLog():
     try:
         x = requests.get(LOG_URL + f'/crash')
@@ -101,7 +132,7 @@ def crashLog():
     except HTTPError:
         return make_response('Invalid input\n', 400)
 
-def getLogService():
+def getLogs():
     try:
         x = requests.get(LOG_URL + f'/getLogs')
         x.raise_for_status()
@@ -110,15 +141,3 @@ def getLogService():
         return make_response('Log service is down\n', 404)
     except HTTPError:
         return make_response('Invalid input\n', 400)
-
-def getLogDB():
-    res = {}
-    for key in r.scan_iter(match="*"):
-        value = r.get(key)
-        res.update({key : value})
-    return make_response(jsonify(res), 200)
-
-
-
-def getLogs():
-    return getLogService()
